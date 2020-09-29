@@ -35,11 +35,13 @@ public class GitHubClient {
 
   public Flux<GitHubContentForTranslation> getFilesContent(Flux<GitHubRepositoryContent> files) {
     return files.flatMap(file -> {
-        GitHubContentForTranslation result = new GitHubContentForTranslation();
-        result.setName(file.getName());
-        retrieveFileContent(file)
-          .subscribe(content -> result.setContent(content));
-        return Mono.just(result);
+      GitHubContentForTranslation result = new GitHubContentForTranslation();
+      result.setName(file.getName());
+      Mono<String> fileContent = retrieveFileContent(file);
+      return fileContent.map(content -> {
+        result.setContent(content);
+        return result;
+      });
     });
   }
 

@@ -23,12 +23,12 @@ public class RepositoryService {
   public Flux<GitHubContentForTranslation> extractFiles(TranslationRequest translationRequest) {
     Flux<GitHubRepositoryContent> repositoryContent = client.getRepositoryContent(Flux.fromIterable(translationRequest.getRepositoriesUrl()));
     Flux<GitHubRepositoryContent> filteredContent = filterRepositoryContentByType(repositoryContent, translationRequest.getFileExtension());
-    Flux<GitHubContentForTranslation> filesContent = client.getFilesContent(filteredContent);
-
-    filesContent.subscribe(file -> {
-      file.setSourceLanguage(translationRequest.getSourceLanguage());
-      file.setTargetLanguage(translationRequest.getTargetLanguage());
-    });
+    Flux<GitHubContentForTranslation> filesContent = client.getFilesContent(filteredContent)
+      .map(file -> {
+        file.setSourceLanguage(translationRequest.getSourceLanguage());
+        file.setTargetLanguage(translationRequest.getTargetLanguage());
+        return file;
+      });
 
     return filesContent;
   }

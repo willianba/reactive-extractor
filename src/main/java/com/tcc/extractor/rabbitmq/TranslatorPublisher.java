@@ -38,10 +38,11 @@ public class TranslatorPublisher {
   }
 
   public void sendFilesToTranslation(Flux<GitHubContentForTranslation> files) {
-    files.flatMap(file -> Mono.just(
+    files.flatMap(file -> {
+      return Mono.just(
       MessageBuilder.withBody(mapFileToByteArray(file))
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-        .build()))
+        .build());})
     .flatMap(message -> Mono.fromRunnable(() -> amqpTemplate.send(directExchange, translateRoutingKey, message)))
     .doOnComplete(() -> logger.info("Files sent to translation"))
     .subscribe();
