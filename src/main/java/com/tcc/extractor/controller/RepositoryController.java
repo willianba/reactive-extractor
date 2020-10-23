@@ -5,6 +5,8 @@ import com.tcc.extractor.dto.TranslationRequest;
 import com.tcc.extractor.rabbitmq.TranslatorPublisher;
 import com.tcc.extractor.service.RepositoryService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,8 @@ import reactor.core.publisher.Mono;
 @RequestMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RepositoryController {
 
+  private static final java.util.logging.Logger logger = LoggerFactory.getLogger(RepositoryController.class);
+
   @Autowired
   private RepositoryService service;
 
@@ -29,6 +33,8 @@ public class RepositoryController {
 
   @PostMapping
   public Mono<ResponseEntity<String>> extractFiles(@RequestBody TranslationRequest translationRequest) {
+    logger.info("Request received - Started translating files");
+
     Flux<GitHubContentForTranslation> files = service.extractFiles(translationRequest);
     return files.hasElements()
       .map(hasElement -> {
