@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RepositoryController {
 
-  private static final java.util.logging.Logger logger = LoggerFactory.getLogger(RepositoryController.class);
+  private static final Logger logger = LoggerFactory.getLogger(RepositoryController.class);
 
   @Autowired
   private RepositoryService service;
